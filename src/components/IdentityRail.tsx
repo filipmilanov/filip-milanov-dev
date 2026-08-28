@@ -1,7 +1,15 @@
 import { Box, Link, Stack, Typography } from '@mui/material'
+import GitHubIcon from '@mui/icons-material/GitHub'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import { profile } from '../data/profile'
 import logoUrl from '../../assets/logo.svg'
-import { easing, mono, spine, tokens } from '../theme'
+import { easing, mono, tokens } from '../theme'
+
+/** Icon shown instead of the raw URL for known social links. */
+const socialIcons: Record<string, typeof GitHubIcon> = {
+  GitHub: GitHubIcon,
+  LinkedIn: LinkedInIcon,
+}
 
 /** The masthead of the CV: fixed identity beside changing content. */
 export default function IdentityRail() {
@@ -57,15 +65,19 @@ export default function IdentityRail() {
 
       <Stack component="nav" spacing={1.25} aria-label="Contact links">
         <ContactLink label="Email" href={`mailto:${profile.email}`} value={profile.email} />
-        {profile.links.map((link) => (
-          <ContactLink
-            key={link.href}
-            label={link.label}
-            href={link.href}
-            value={link.href.replace(/^https?:\/\/(www\.)?/, '')}
-            external
-          />
-        ))}
+        {profile.links.map((link) => {
+          const Icon = socialIcons[link.label]
+          return (
+            <ContactLink
+              key={link.href}
+              label={link.label}
+              href={link.href}
+              value={profile.name}
+              icon={Icon ? <Icon sx={{ fontSize: '1rem' }} /> : undefined}
+              external
+            />
+          )
+        })}
       </Stack>
     </Box>
   )
@@ -75,11 +87,13 @@ function ContactLink({
   label,
   href,
   value,
+  icon,
   external,
 }: {
   label: string
   href: string
-  value: string
+  value?: string
+  icon?: React.ReactNode
   external?: boolean
 }) {
   return (
@@ -104,7 +118,7 @@ function ContactLink({
           fontSize: '0.625rem',
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
-          color: spine,
+          color: tokens.brass,
         }}
       >
         {label}
@@ -112,9 +126,17 @@ function ContactLink({
       <Box
         component="span"
         className="value"
-        sx={{ fontFamily: mono, overflowWrap: 'anywhere' }}
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 0.75,
+          fontFamily: mono,
+          overflowWrap: 'anywhere',
+          color: 'inherit',
+        }}
       >
         {value}
+        {icon}
       </Box>
     </Link>
   )
