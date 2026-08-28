@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react'
 // Change this string if you rename the repository.
 export default defineConfig({
   plugins: [react()],
-  base: '/curriculum-vitae-web/',
+  base: '/',
   server: { port: 3000 },
 })
