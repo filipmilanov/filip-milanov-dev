@@ -17,8 +17,7 @@ export default function IdentityRail() {
     <Box
       component="header"
       sx={{
-        position: { xs: 'static', md: 'sticky' },
-        top: { md: 64 },
+        position: 'static',
         alignSelf: 'start',
       }}
     >

@@ -17,7 +17,16 @@ export default function App() {
   const current = sections.find((s) => s.path === pathname)?.path ?? false
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+    <Container
+      maxWidth="lg"
+      sx={{
+        py: { xs: 6, md: 10 },
+        height: { md: '100vh' },
+        overflow: { md: 'hidden' },
+        display: { md: 'flex' },
+        flexDirection: { md: 'column' },
+      }}
+    >
       <Box
         sx={{
           display: 'grid',
@@ -25,16 +34,27 @@ export default function App() {
           columnGap: { md: 8 },
           rowGap: { xs: 6, md: 0 },
           alignItems: 'start',
+          flex: { md: 1 },
+          minHeight: 0,
         }}
       >
         <IdentityRail />
 
-        <Box component="main">
+        <Box
+          component="main"
+          sx={{
+            minHeight: 0,
+            height: { md: '100%' },
+            display: { md: 'flex' },
+            flexDirection: { md: 'column' },
+          }}
+        >
           <Tabs
             value={current}
             aria-label="CV sections"
             sx={{
               minHeight: 0,
+              flexShrink: 0,
               mb: { xs: 4, md: 5 },
               borderBottom: `1px solid ${tokens.ink700}`,
               '& .MuiTabs-indicator': { height: 2, bgcolor: tokens.brass },
@@ -66,14 +86,24 @@ export default function App() {
             ))}
           </Tabs>
 
-          <Routes>
-            <Route path="/" element={<Navigate to="/education" replace />} />
-            <Route path="/education" element={<EducationTimeline />} />
-            <Route path="/skills" element={<SkillsPanel />} />
-            <Route path="/projects" element={<ProjectGrid />} />
-            {/* Any unknown path falls back to the first section. */}
-            <Route path="*" element={<Navigate to="/education" replace />} />
-          </Routes>
+          <Box
+            sx={{
+              minHeight: 0,
+              flex: { md: 1 },
+              overflowY: { md: 'auto' },
+              // Keep the scrollbar clear of the content edge.
+              pr: { md: 1 },
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Navigate to="/education" replace />} />
+              <Route path="/education" element={<EducationTimeline />} />
+              <Route path="/skills" element={<SkillsPanel />} />
+              <Route path="/projects" element={<ProjectGrid />} />
+              {/* Any unknown path falls back to the first section. */}
+              <Route path="*" element={<Navigate to="/education" replace />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
     </Container>
