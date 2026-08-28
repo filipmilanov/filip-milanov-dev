@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Filip Milanov">
+  <title>Filip Milanov</title>
+  <!--
+    The mark is the education spine read as a letter F: a brass hairline
+    running past its ends, with two solid arms hanging off it — the same
+    structure as a timeline rule with entries.
+
+    Colours are the site tokens: ink800 ground, ink700 edge, brass spine,
+    paper arms. The tile carries its own ground so contrast holds on any
+    background, light or dark.
+  -->
+  <rect x="0.5" y="0.5" width="63" height="63" rx="14" fill="#181C26" stroke="#222736"/>
+  <rect x="22" y="13" width="3.5" height="38" fill="#C9A227"/>
+  <rect x="22" y="17.5" width="20" height="5" fill="#E8E4DB"/>
+  <rect x="22" y="31" width="14" height="5" fill="#E8E4DB"/>
+</svg>
