@@ -1,30 +1,34 @@
-import type { Project } from '../types'
+import type { Lang, Project } from '../types'
 
 // ── PLACEHOLDER CONTENT ──────────────────────────────────────────────────────
-// To add a project: copy one object, change the fields, give it a unique `id`.
+// To add a project: copy one object into `projectsBase`, give it a unique `id`,
+// then add a matching entry (same `id`) to `translations` for every language.
 // Snapshots go in `public/projects/` — wrap the path in `asset()` so it picks up
 // the Vite `base` and still resolves once the site is served from a subpath.
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`
 
-export const projects: Project[] = [
+interface ProjectBase {
+  id: string
+  name: string
+  images: { src: string; alt: string }[]
+  tech: string[]
+  githubUrl?: string
+  liveUrl?: string
+  year?: string
+}
+
+interface ProjectTranslation {
+  tagline: string
+  description: string
+  highlights?: string[]
+  audience?: string[]
+  role?: string
+}
+
+const projectsBase: ProjectBase[] = [
   {
     id: 'placeholder-one',
     name: 'PRISM',
-    tagline:
-      'A web-based trackside configuration and visualization system for autonomous racing.',
-    description:
-      'Between runs at a test day, an engineer has minutes to retune the car. PRISM puts that whole loop on a tablet at trackside, and brings a full reconfiguration cycle down to under 20 minutes.',
-    highlights: [
-      'View and edit autonomous driving parameters through a tablet interface',
-      'Correct cone maps and racing paths between test runs',
-      'Define sector-specific parameter overrides',
-      'Save and load complete configuration snapshots',
-    ],
-    audience: [
-      'TU Wien Racing driverless',
-      'Formula Student operations',
-      'Future team cohorts',
-    ],
     images: [
       {
         src: asset('projects/prism/prism-segments-raceline.jpg'),
@@ -49,15 +53,11 @@ export const projects: Project[] = [
     ],
     tech: ['TypeScript', 'React', 'ROS2', 'Zenoh', 'MUI', 'Figma', 'Vite', 'Docker'],
     githubUrl: 'https://github.com/filipmilanov/PRISM-ASE/tree/master',
-    role: 'UI/UX/3D Vizualization Expert and Technical Architect',
     year: '2025/2026',
   },
   {
     id: 'placeholder-two',
     name: 'QualiT',
-    tagline: 'AI-Powered Software Quality Testing Tool',
-    description:
-      'QualiT is a semi-automated software quality testing tool developed using Angular (Frontend) and Spring Boot (Backend). It enables teams to evaluate the maturity and effectiveness of their software testing workflows using both industry standards and AI-driven artifact analysis.',
     images: [
       {
         src: asset('projects/qualit/qualit-sonarqube-analysis.png'),
@@ -87,9 +87,6 @@ export const projects: Project[] = [
   {
     id: 'placeholder-four',
     name: 'EasyFlat',
-    tagline: 'EasyFlat is a web application that simplifies the management of shared flats.',
-    description:
-      'EasyFlat is a web application that simplifies the management of shared flats, providing a platform for residents to track grocery lists, manage tasks, and find recepies based on available ingredients.',
     images: [
       {
         // Illustration, not a screenshot — this project has no captures.
@@ -97,9 +94,90 @@ export const projects: Project[] = [
         alt: 'Illustration for EasyFlat: three overlapping panels standing for the shared grocery checklist, the task list assigned across housemates, and a matched recipe',
       },
     ],
-    tech: [ 'Java', 'Angular', 'TypeScript', 'Spring Boot', 'H2'],
+    tech: ['Java', 'Angular', 'TypeScript', 'Spring Boot', 'H2'],
     githubUrl: 'https://github.com/filipmilanov/EasyFlat',
     year: '2023',
   },
-
 ]
+
+const translations: Record<Lang, Record<string, ProjectTranslation>> = {
+  en: {
+    'placeholder-one': {
+      tagline: 'A web-based trackside configuration and visualization system for autonomous racing.',
+      description:
+        'Between runs at a test day, an engineer has minutes to retune the car. PRISM puts that whole loop on a tablet at trackside, and brings a full reconfiguration cycle down to under 20 minutes.',
+      highlights: [
+        'View and edit autonomous driving parameters through a tablet interface',
+        'Correct cone maps and racing paths between test runs',
+        'Define sector-specific parameter overrides',
+        'Save and load complete configuration snapshots',
+      ],
+      audience: ['TU Wien Racing driverless', 'Formula Student operations', 'Future team cohorts'],
+      role: 'UI/UX/3D Vizualization Expert and Technical Architect',
+    },
+    'placeholder-two': {
+      tagline: 'AI-Powered Software Quality Testing Tool',
+      description:
+        'QualiT is a semi-automated software quality testing tool developed using Angular (Frontend) and Spring Boot (Backend). It enables teams to evaluate the maturity and effectiveness of their software testing workflows using both industry standards and AI-driven artifact analysis.',
+    },
+    'placeholder-four': {
+      tagline: 'EasyFlat is a web application that simplifies the management of shared flats.',
+      description:
+        'EasyFlat is a web application that simplifies the management of shared flats, providing a platform for residents to track grocery lists, manage tasks, and find recepies based on available ingredients.',
+    },
+  },
+  de: {
+    'placeholder-one': {
+      tagline: 'Ein webbasiertes System zur Konfiguration und Visualisierung am Streckenrand für autonomes Rennfahren.',
+      description:
+        'Zwischen den Läufen an einem Testtag bleiben einem Ingenieur nur wenige Minuten, um das Auto neu abzustimmen. PRISM bringt diesen gesamten Ablauf auf ein Tablet direkt an der Strecke und verkürzt einen vollständigen Rekonfigurationszyklus auf unter 20 Minuten.',
+      highlights: [
+        'Parameter des autonomen Fahrens über eine Tablet-Oberfläche anzeigen und bearbeiten',
+        'Pylonenkarten und Rennlinien zwischen Testläufen korrigieren',
+        'Streckenabschnittsspezifische Parameter-Überschreibungen definieren',
+        'Vollständige Konfigurationsstände speichern und laden',
+      ],
+      audience: ['TU Wien Racing Driverless', 'Formula-Student-Betrieb', 'Zukünftige Team-Generationen'],
+      role: 'UI/UX & 3D-Visualisierung, technische Architektur',
+    },
+    'placeholder-two': {
+      tagline: 'KI-gestütztes Werkzeug zur Prüfung der Softwarequalität',
+      description:
+        'QualiT ist ein halbautomatisiertes Werkzeug zur Prüfung der Softwarequalität, entwickelt mit Angular (Frontend) und Spring Boot (Backend). Es ermöglicht Teams, die Reife und Wirksamkeit ihrer Testprozesse anhand von Industriestandards und KI-gestützter Artefaktanalyse zu bewerten.',
+    },
+    'placeholder-four': {
+      tagline: 'EasyFlat ist eine Webanwendung, die die Verwaltung von Wohngemeinschaften vereinfacht.',
+      description:
+        'EasyFlat ist eine Webanwendung, die die Verwaltung von Wohngemeinschaften vereinfacht und den Bewohnern eine Plattform bietet, um Einkaufslisten zu führen, Aufgaben zu verwalten und Rezepte anhand vorhandener Zutaten zu finden.',
+    },
+  },
+  bg: {
+    'placeholder-one': {
+      tagline: 'Уеб базирана система за конфигуриране и визуализация край пистата за автономно състезаване.',
+      description:
+        'Между отделните пускания в тестов ден инженерът разполага само с минути да настрои отново колата. PRISM пренася целия този процес на таблет край пистата и съкращава пълен цикъл на препроверка до под 20 минути.',
+      highlights: [
+        'Преглед и редактиране на параметри за автономно шофиране през таблет интерфейс',
+        'Коригиране на карти с конуси и състезателни траектории между тестовите пускания',
+        'Задаване на настройки на параметри, специфични за отделен сектор',
+        'Запазване и зареждане на пълни конфигурационни моментни снимки',
+      ],
+      audience: ['TU Wien Racing Driverless', 'Operations на Formula Student', 'Бъдещи поколения на отбора'],
+      role: 'UI/UX и 3D визуализация, техническа архитектура',
+    },
+    'placeholder-two': {
+      tagline: 'Инструмент за оценка на софтуерното качество с изкуствен интелект',
+      description:
+        'QualiT е полуавтоматизиран инструмент за оценка на софтуерното качество, разработен с Angular (Frontend) и Spring Boot (Backend). Той позволява на екипите да оценяват зрелостта и ефективността на процесите си за тестване чрез индустриални стандарти и AI анализ на артефакти.',
+    },
+    'placeholder-four': {
+      tagline: 'EasyFlat е уеб приложение, което улеснява управлението на споделени апартаменти.',
+      description:
+        'EasyFlat е уеб приложение, което улеснява управлението на споделени апартаменти, като предоставя платформа на живущите да следят списъци за пазаруване, да управляват задачи и да намират рецепти според наличните продукти.',
+    },
+  },
+}
+
+export function getProjects(lang: Lang): Project[] {
+  return projectsBase.map((base) => ({ ...base, ...translations[lang][base.id] }))
+}

@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Box, Button, Collapse, Link, Stack, Typography } from '@mui/material'
 import type { Thesis } from '../types'
-import { easing, mono, shadows, tokens } from '../theme'
+import { easing, mono } from '../theme'
+import { useTokens } from '../context/ThemeModeContext'
+import { useLanguage } from '../context/LanguageContext'
+import { strings } from '../i18n/strings'
 
 /**
  * The attached-document slot. Renders only when a degree has a thesis, so the
@@ -9,6 +12,9 @@ import { easing, mono, shadows, tokens } from '../theme'
  */
 export default function ThesisBlock({ thesis }: { thesis: Thesis }) {
   const [open, setOpen] = useState(false)
+  const { tokens, shadows } = useTokens()
+  const { lang } = useLanguage()
+  const t = strings[lang].thesis
 
   return (
     <Box sx={{ mt: 2.5 }}>
@@ -41,7 +47,7 @@ export default function ThesisBlock({ thesis }: { thesis: Thesis }) {
         >
           ▸
         </Box>
-        Thesis
+        {t.toggle}
       </Button>
 
       <Collapse in={open} timeout={260}>
@@ -77,7 +83,7 @@ export default function ThesisBlock({ thesis }: { thesis: Thesis }) {
                 rel="noopener noreferrer"
                 sx={{ fontFamily: mono, color: tokens.brass, '&:hover': { opacity: 0.75 } }}
               >
-                Read the PDF ↗
+                {t.readPdf}
               </Link>
             )}
           </Stack>

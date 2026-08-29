@@ -1,7 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material'
-import { skills } from '../data/skills'
+import { skillsByLang } from '../data/skills'
 import type { SkillGroup, SkillItem } from '../types'
-import { mono, tokens } from '../theme'
+import { mono } from '../theme'
+import { useTokens } from '../context/ThemeModeContext'
+import { useLanguage } from '../context/LanguageContext'
+import { strings } from '../i18n/strings'
 import Tag from './Tag'
 
 const nameOf = (item: SkillItem) => (typeof item === 'string' ? item : item.name)
@@ -14,10 +17,14 @@ const isPrimary = (item: SkillItem) => typeof item !== 'string' && Boolean(item.
  * proficiency bar, which would invent precision that isn't there.
  */
 export default function SkillsPanel() {
+  const { tokens } = useTokens()
+  const { lang } = useLanguage()
+  const skills = skillsByLang[lang]
+
   if (skills.length === 0) {
     return (
       <Typography variant="body2" sx={{ color: tokens.paperDim }}>
-        No skills listed yet. Add a group to <code>src/data/skills.ts</code> and it appears here.
+        {strings[lang].skills.empty}
       </Typography>
     )
   }
@@ -32,6 +39,8 @@ export default function SkillsPanel() {
 }
 
 function Group({ group, last }: { group: SkillGroup; last: boolean }) {
+  const { tokens } = useTokens()
+
   return (
     <Box
       sx={{

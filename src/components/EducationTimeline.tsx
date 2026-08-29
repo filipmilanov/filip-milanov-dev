@@ -1,7 +1,9 @@
 import { Box, Stack, Typography } from '@mui/material'
-import { education } from '../data/education'
+import { educationByLang } from '../data/education'
 import type { EducationEntry } from '../types'
-import { mono, spine, tokens } from '../theme'
+import { mono } from '../theme'
+import { useTokens } from '../context/ThemeModeContext'
+import { useLanguage } from '../context/LanguageContext'
 import Tag from './Tag'
 import ThesisBlock from './ThesisBlock'
 
@@ -11,6 +13,9 @@ import ThesisBlock from './ThesisBlock'
  * A timeline earns its place here because a CV genuinely is chronological.
  */
 export default function EducationTimeline() {
+  const { lang } = useLanguage()
+  const education = educationByLang[lang]
+
   return (
     <Stack component="ol" sx={{ listStyle: 'none', m: 0, p: 0 }} spacing={0}>
       {education.map((entry, i) => (
@@ -21,6 +26,8 @@ export default function EducationTimeline() {
 }
 
 function Entry({ entry, last }: { entry: EducationEntry; last: boolean }) {
+  const { tokens, spine } = useTokens()
+
   return (
     <Box
       component="li"

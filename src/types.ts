@@ -1,3 +1,7 @@
+export type Lang = 'en' | 'de' | 'bg'
+
+export type ThemeMode = 'light' | 'dark'
+
 /** A thesis attached to a degree. Leave a degree's `thesis` undefined until you have one. */
 export interface Thesis {
   title: string

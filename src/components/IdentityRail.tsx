@@ -1,9 +1,12 @@
 import { Box, Link, Stack, Typography } from '@mui/material'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import { profile } from '../data/profile'
+import { profileByLang } from '../data/profile'
 import logoUrl from '../../assets/logo.svg'
-import { easing, mono, tokens } from '../theme'
+import { easing, mono } from '../theme'
+import { useTokens } from '../context/ThemeModeContext'
+import { useLanguage } from '../context/LanguageContext'
+import { strings } from '../i18n/strings'
 
 /** Icon shown instead of the raw URL for known social links. */
 const socialIcons: Record<string, typeof GitHubIcon> = {
@@ -13,6 +16,11 @@ const socialIcons: Record<string, typeof GitHubIcon> = {
 
 /** The masthead of the CV: fixed identity beside changing content. */
 export default function IdentityRail() {
+  const { tokens } = useTokens()
+  const { lang } = useLanguage()
+  const t = strings[lang]
+  const profile = profileByLang[lang]
+
   return (
     <Box
       component="header"
@@ -62,8 +70,8 @@ export default function IdentityRail() {
         {profile.bio}
       </Typography>
 
-      <Stack component="nav" spacing={1.25} aria-label="Contact links">
-        <ContactLink label="Email" href={`mailto:${profile.email}`} value={profile.email} />
+      <Stack component="nav" spacing={1.25} aria-label={t.contact.label}>
+        <ContactLink label={t.contact.email} href={`mailto:${profile.email}`} value={profile.email} tokens={tokens} />
         {profile.links.map((link) => {
           const Icon = socialIcons[link.label]
           return (
@@ -74,6 +82,7 @@ export default function IdentityRail() {
               value={profile.name}
               icon={Icon ? <Icon sx={{ fontSize: '1rem' }} /> : undefined}
               external
+              tokens={tokens}
             />
           )
         })}
@@ -88,12 +97,14 @@ function ContactLink({
   value,
   icon,
   external,
+  tokens,
 }: {
   label: string
   href: string
   value?: string
   icon?: React.ReactNode
   external?: boolean
+  tokens: ReturnType<typeof useTokens>['tokens']
 }) {
   return (
     <Link

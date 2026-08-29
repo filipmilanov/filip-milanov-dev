@@ -4,16 +4,23 @@ import IdentityRail from './components/IdentityRail'
 import EducationTimeline from './components/EducationTimeline'
 import SkillsPanel from './components/SkillsPanel'
 import ProjectGrid from './components/ProjectGrid'
-import { easing, tokens } from './theme'
-
-const sections = [
-  { path: '/education', label: 'Education' },
-  { path: '/skills', label: 'Skills' },
-  { path: '/projects', label: 'Projects' },
-]
+import SettingsMenu from './components/SettingsMenu'
+import { easing } from './theme'
+import { useTokens } from './context/ThemeModeContext'
+import { useLanguage } from './context/LanguageContext'
+import { strings } from './i18n/strings'
 
 export default function App() {
   const { pathname } = useLocation()
+  const { tokens } = useTokens()
+  const { lang } = useLanguage()
+  const t = strings[lang]
+
+  const sections = [
+    { path: '/education', label: t.nav.education },
+    { path: '/skills', label: t.nav.skills },
+    { path: '/projects', label: t.nav.projects },
+  ]
   const current = sections.find((s) => s.path === pathname)?.path ?? false
 
   return (
@@ -27,6 +34,8 @@ export default function App() {
         flexDirection: { md: 'column' },
       }}
     >
+      <SettingsMenu />
+
       <Box
         sx={{
           display: 'grid',
@@ -51,7 +60,7 @@ export default function App() {
         >
           <Tabs
             value={current}
-            aria-label="CV sections"
+            aria-label={t.nav.sectionsLabel}
             sx={{
               minHeight: 0,
               flexShrink: 0,

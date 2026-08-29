@@ -2,11 +2,17 @@ import { useState } from 'react'
 import { Box, Link, Stack, Typography } from '@mui/material'
 import type { Project } from '../types'
 import Tag from './Tag'
-import { easing, mono, shadows, spine, tokens } from '../theme'
+import { easing, mono } from '../theme'
+import { useTokens } from '../context/ThemeModeContext'
+import { useLanguage } from '../context/LanguageContext'
+import { strings } from '../i18n/strings'
 
 export default function ProjectCard({ project }: { project: Project }) {
   const [active, setActive] = useState(0)
   const image = project.images[active]
+  const { tokens, spine, shadows } = useTokens()
+  const { lang } = useLanguage()
+  const t = strings[lang].projects
 
   return (
     <Box
@@ -24,69 +30,70 @@ export default function ProjectCard({ project }: { project: Project }) {
       }}
     >
       {image && (
-        <Box sx={{ position: 'relative', aspectRatio: '16 / 10', overflow: 'hidden' }}>
+        <Box sx={{ overflow: 'hidden' }}>
+          {/* Sized by the image's own aspect ratio — cover-cropping was slicing
+              off the edges of these wider-than-16:10 screenshots. */}
           <Box
             component="img"
             src={image.src}
             alt={image.alt}
             loading="lazy"
-            sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            sx={{ width: '100%', height: 'auto', display: 'block' }}
           />
-          {/* Colour treatment, then a gradient scrim so the edge meets the card. */}
-          <Box
-            aria-hidden
-            sx={{
-              position: 'absolute',
-              inset: 0,
-              bgcolor: tokens.ink700,
-              mixBlendMode: 'multiply',
-              opacity: 0.22,
-              transition: `opacity 240ms ${easing}`,
-              '.project-card:hover &': { opacity: 0 },
-            }}
-          />
-          <Box
-            aria-hidden
-            sx={{
-              position: 'absolute',
-              inset: 0,
-              background: `linear-gradient(to top, ${tokens.ink800} 0%, rgba(24, 28, 38, 0.18) 42%, transparent 100%)`,
-            }}
-          />
-
-          {/* Selector sits on the image, so cards with one snapshot and cards
-              with several keep the same vertical rhythm. */}
-          {project.images.length > 1 && (
-            <Stack
-              direction="row"
-              sx={{ gap: 1, position: 'absolute', left: 24, bottom: 16 }}
-              aria-label="Snapshots"
-            >
-              {project.images.map((img, i) => (
-                <Box
-                  key={img.src}
-                  component="button"
-                  type="button"
-                  onClick={() => setActive(i)}
-                  aria-label={`Show snapshot ${i + 1}`}
-                  aria-current={i === active}
-                  sx={{
-                    width: 28,
-                    height: 4,
-                    p: 0,
-                    border: 'none',
-                    borderRadius: 2,
-                    cursor: 'pointer',
-                    bgcolor: i === active ? tokens.brass : 'rgba(232, 228, 219, 0.32)',
-                    transition: `opacity 160ms ${easing}, transform 160ms ${easing}`,
-                    '&:hover': { opacity: 0.8 },
-                    '&:active': { transform: 'scaleY(0.7)' },
-                  }}
-                />
-              ))}
-            </Stack>
-          )}
         </Box>
+      )}
+
+      {/* Selector sits below the image on the card's own surface, so it
+          reads with consistent contrast no matter what the screenshot looks
+          like. Each button is a full 44px touch target for phones, with a
+          smaller bar drawn inside it. */}
+      {project.images.length > 1 && (
+        <Stack
+          direction="row"
+          sx={{
+            gap: 0.5,
+            justifyContent: 'center',
+            bgcolor: tokens.ink800,
+            borderBottom: `1px solid ${tokens.ink700}`,
+          }}
+          aria-label={t.snapshotsLabel}
+        >
+          {project.images.map((img, i) => (
+            <Box
+              key={img.src}
+              component="button"
+              type="button"
+              onClick={() => setActive(i)}
+              aria-label={t.showSnapshot(i + 1)}
+              aria-current={i === active}
+              sx={{
+                width: 44,
+                height: 36,
+                p: 0,
+                border: 'none',
+                background: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                '&:active .dot': { transform: 'scaleY(0.6)' },
+              }}
+            >
+              <Box
+                className="dot"
+                sx={{
+                  width: 24,
+                  height: 6,
+                  borderRadius: 3,
+                  bgcolor: i === active ? tokens.brass : tokens.paperDim,
+                  transition: `opacity 160ms ${easing}, transform 160ms ${easing}`,
+                  opacity: i === active ? 1 : 0.75,
+                  '.project-card button:hover &': { opacity: 1 },
+                }}
+              />
+            </Box>
+          ))}
+        </Stack>
       )}
 
       <Box sx={{ p: 3 }}>
@@ -144,7 +151,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         {(project.role || (project.audience && project.audience.length > 0)) && (
           <Box sx={{ display: 'grid', rowGap: 1, mt: 2 }}>
             {project.audience && project.audience.length > 0 && (
-              <CardMeta label="For">
+              <CardMeta label={t.for} spine={spine} tokens={tokens}>
                 {project.audience.map((a) => (
                   <Box component="span" key={a} sx={{ display: 'block' }}>
                     {a}
@@ -152,22 +159,32 @@ export default function ProjectCard({ project }: { project: Project }) {
                 ))}
               </CardMeta>
             )}
-            {project.role && <CardMeta label="Role">{project.role}</CardMeta>}
+            {project.role && (
+              <CardMeta label={t.role} spine={spine} tokens={tokens}>
+                {project.role}
+              </CardMeta>
+            )}
           </Box>
         )}
 
         <Stack direction="row" flexWrap="wrap" sx={{ gap: 1, mt: 2.5 }}>
-          {project.tech.map((t) => (
-            <Tag key={t}>{t}</Tag>
+          {project.tech.map((tech) => (
+            <Tag key={tech}>{tech}</Tag>
           ))}
         </Stack>
 
         {(project.githubUrl || project.liveUrl) && (
           <Stack direction="row" sx={{ gap: 3, mt: 3 }}>
             {project.githubUrl && (
-              <CardLink href={project.githubUrl}>View on GitHub ↗</CardLink>
+              <CardLink href={project.githubUrl} tokens={tokens}>
+                {t.viewGithub}
+              </CardLink>
             )}
-            {project.liveUrl && <CardLink href={project.liveUrl}>Open the site ↗</CardLink>}
+            {project.liveUrl && (
+              <CardLink href={project.liveUrl} tokens={tokens}>
+                {t.openSite}
+              </CardLink>
+            )}
           </Stack>
         )}
       </Box>
@@ -175,7 +192,15 @@ export default function ProjectCard({ project }: { project: Project }) {
   )
 }
 
-function CardLink({ href, children }: { href: string; children: React.ReactNode }) {
+function CardLink({
+  href,
+  children,
+  tokens,
+}: {
+  href: string
+  children: React.ReactNode
+  tokens: ReturnType<typeof useTokens>['tokens']
+}) {
   return (
     <Link
       href={href}
@@ -197,7 +222,17 @@ function CardLink({ href, children }: { href: string; children: React.ReactNode 
 }
 
 /** Label/value row, matching the identity rail's contact grid. */
-function CardMeta({ label, children }: { label: string; children: React.ReactNode }) {
+function CardMeta({
+  label,
+  children,
+  spine,
+  tokens,
+}: {
+  label: string
+  children: React.ReactNode
+  spine: string
+  tokens: ReturnType<typeof useTokens>['tokens']
+}) {
   return (
     <Box
       sx={{
