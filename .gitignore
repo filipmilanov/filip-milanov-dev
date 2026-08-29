@@ -70,3 +70,4 @@ temporary screenshots/
 *.local
 claude.md
 CLAUDE.md
+.claude/
