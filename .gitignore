@@ -67,6 +67,7 @@ assets/*
 
 # ---- Project-specific ----
 temporary screenshots/
+screenshot.mjs
 *.local
 claude.md
 CLAUDE.md
